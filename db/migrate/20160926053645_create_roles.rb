@@ -4,5 +4,7 @@ class CreateRoles < ActiveRecord::Migration[5.0]
       t.string :name, :state
       t.timestamps
     end
+
+    Role.create_audit_table
   end
 end
