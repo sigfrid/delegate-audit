@@ -2,7 +2,7 @@ class Audited < SimpleDelegator
   # delegate :id, :to => :__getobj__
 
   def save
-    role_audits.build(audit_params)
+    audits.build(audit_params)
     super
   end
 
