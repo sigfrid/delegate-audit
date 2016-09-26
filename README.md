@@ -1,2 +1,7 @@
 # delegate-audit
-- Audit AR models with a deletor object - POC
+
+Audit AR models with a delegator object - POC
+
+
+## Usage
+`rake console`
