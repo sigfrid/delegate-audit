@@ -1,5 +1,7 @@
 development:
-  adapter: sqlite3
-  database: db/delegate-audit.sqlite3
-  pool: 5
+  adapter: postgresql
+  database: delegate-audit
+  encoding: utf8
+  min_messages: warning
+  pool: 2
   timeout: 5000
