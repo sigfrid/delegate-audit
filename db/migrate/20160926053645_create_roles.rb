@@ -5,6 +5,13 @@ class CreateRoles < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    Role.create_audit_table
+    create_table :role_audits do |t|
+      t.integer     :auditee_id
+      t.string      :action
+      t.jsonb       :audited_changes #diff
+      t.datetime    :created_at
+    end
+
+    add_index :role_audits, :auditee_id
   end
 end
