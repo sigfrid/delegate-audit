@@ -32,11 +32,15 @@ class Audited < SimpleDelegator
   end
 
   def associations_changes
-    associated_collections = @audited_associations.map { |association| @audited_object.send(association) }
+    associated_collections = through_associations.map { |association| @audited_object.send(association) }
 
     associated_collections.each_with_object([]) do |associated_collection, associations_changes|
       associations_changes << association_changes(associated_collection)
     end
+  end
+
+  def through_associations
+    @audited_associations.map { |association| String(@auditee_class.reflections[association].options[:through]) }
   end
 
   def association_changes(associated_collection)
