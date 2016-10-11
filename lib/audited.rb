@@ -39,18 +39,15 @@ private
 
   def associations_changes
     count = 1
-    changes_as_hash = {}
 
     associated_collections = @audited_associations.map { |association| @audited_object.send(association) }
 
-    associated_collections.each do |associated_collection|
+    associated_collections.each_with_object({}) do |associated_collection, changes_as_hash|
       changes_of(associated_collection).each do |change|
         changes_as_hash.merge!(Hash[change.map{|k,v| ["#{count}_#{k}",v]}])
         count += 1
       end
     end
-
-    changes_as_hash
   end
 
   def through_associations_without(ignored_associations)
