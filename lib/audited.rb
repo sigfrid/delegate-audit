@@ -13,7 +13,7 @@ class Audited < SimpleDelegator
 
   def save!
     ActiveRecord::Base.transaction do
-      audited_changes = changes.merge(associations_changes_as_hash)
+      audited_changes = changes.merge(associations_changes)
       super
       @auditor_class.create(auditee_id: id, audited_changes: audited_changes)
     end
@@ -28,30 +28,26 @@ class Audited < SimpleDelegator
 
 private
 
-  def associations_changes_as_hash
-    if @audited_associations.empty?
-      p "EMPTY"
-      { }
-    else
-      associations_changes
-    end
-  end
-
-  def associations_changes
-    associated_collections = @audited_associations.map { |association| @audited_object.send(association) }
-
-    associated_collections.each_with_object({}) do |associated_collection, changes_as_hash|
-      changes_of(associated_collection).each_with_index do |change, count|
-        changes_as_hash.merge!(Hash[change.map{|k,v| ["#{count}_#{k}",v]}])
-      end
-    end
-  end
-
   def through_associations_without(ignored_associations)
     audited_associations = Array(@auditee_class.reflect_on_all_associations(:has_many).reject { |association| Array(ignored_associations).include? association.name })
 
     audited_associations.map { |association| association.options[:through] }
                         .compact
+  end
+
+  def associations_changes
+    return {} if @audited_associations.empty?
+
+    associated_collections.each_with_object({}) do |associated_collection, association_changes|
+      changes_of(associated_collection).each_with_index do |change, count|
+        unique_hash = Hash[change.map{ |attribute, values| ["#{count}_#{attribute}", values] }]
+        association_changes.merge!(unique_hash)
+      end
+    end
+  end
+
+  def associated_collections
+    @audited_associations.map { |association| @audited_object.send(association) }
   end
 
   def changes_of(associated_collection)

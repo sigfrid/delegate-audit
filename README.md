@@ -12,7 +12,7 @@ Audit AR models with a delegator object - POC
 r = Role.new(name: 'user')
 r.association(:activities).send(:build_through_record, Activity.first)
 r.association(:users).send(:build_through_record, User.first)
-a = Audited.new(r, associations:['activities', 'users'])
+a = Audited.new(r)
 a.save!
 r.name = "super-user"
 r.duties.detect { |d| d.activity_id == 1 }.activity_id = nil
