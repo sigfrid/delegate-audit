@@ -33,38 +33,24 @@ private
       p "EMPTY"
       { }
     else
-      #p JSON.parse(associations_changes.join(','))
-    #  p JSON.generate(associations_changes)
-      JSON.generate(associations_changes)
+      associations_changes
     end
   end
 
   def associations_changes
+    count = 1
+    changes_as_hash = {}
+
     associated_collections = @audited_associations.map { |association| @audited_object.send(association) }
 
-
-    p associated_collections
-
-     associated_collections.each_with_object({}) do |associated_collection, associations_changes|
-       p association_changes(associated_collection)
-
-
-       association_changes(associated_collection).each_with_index do |change_hash, i|
-         p change_hash
-
-        myhash = Hash[change_hash.map{|k,v| ["#{i}_#{k}",v]}]
-
-        p myhash
-        #stringHash = myhash.to_s
-        #stringJson = stringHash.gsub("=>", ":").gsub("nil", "null")
-
-      x =   associations_changes.merge(myhash)
-      p x
-      p " ----"
-      x
-
+    associated_collections.each do |associated_collection|
+      changes_of(associated_collection).each do |change|
+        changes_as_hash.merge!(Hash[change.map{|k,v| ["#{count}_#{k}",v]}])
+        count += 1
       end
     end
+
+    changes_as_hash
   end
 
   def through_associations_without(ignored_associations)
@@ -74,7 +60,7 @@ private
                         .compact
   end
 
-  def association_changes(associated_collection)
+  def changes_of(associated_collection)
     Array(associated_collection).map { |association| extract_associated_object_from(association) }
                                 .reject { |changes| changes == {} }
   end
