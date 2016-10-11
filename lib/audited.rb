@@ -38,14 +38,11 @@ private
   end
 
   def associations_changes
-    count = 1
-
     associated_collections = @audited_associations.map { |association| @audited_object.send(association) }
 
     associated_collections.each_with_object({}) do |associated_collection, changes_as_hash|
-      changes_of(associated_collection).each do |change|
+      changes_of(associated_collection).each_with_index do |change, count|
         changes_as_hash.merge!(Hash[change.map{|k,v| ["#{count}_#{k}",v]}])
-        count += 1
       end
     end
   end
