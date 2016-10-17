@@ -37,11 +37,9 @@ private
 
   def associations_changes
     return {} if @audited_associations.empty?
-
     associated_collections.each_with_object({}) do |associated_collection, association_changes|
-      changes_of(associated_collection).each_with_index do |change, count|
-        unique_hash = Hash[change.map{ |attribute, values| ["#{count}_#{attribute}", values] }]
-        association_changes.merge!(unique_hash)
+      changes_of(associated_collection).each do |change|
+        association_changes.merge!(change) { |k, a, b| a.zip(b).transpose }
       end
     end
   end
