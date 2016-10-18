@@ -20,3 +20,13 @@ r.association(:activities).send(:build_through_record, Activity.last)
 r.association(:users).send(:build_through_record, User.last)
 a.save!
 ```
+
+
+```
+r = Role.new(name: 'user')
+r.association(:activities).send(:build_through_record, Activity.first)
+r.association(:activities).send(:build_through_record, Activity.last)
+r.association(:users).send(:build_through_record, User.first)
+a = Audited.new(r)
+a.save!
+```

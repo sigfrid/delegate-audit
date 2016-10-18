@@ -38,9 +38,7 @@ private
   def associations_changes
     return {} if @audited_associations.empty?
     associated_collections.each_with_object({}) do |associated_collection, association_changes|
-      changes_of(associated_collection).each do |change|
-        association_changes.merge!(change) { |k, a, b| a.zip(b).transpose }
-      end
+      association_changes.merge!(transposed(changes_of(associated_collection)))
     end
   end
 
@@ -59,5 +57,14 @@ private
 
   def other(association)
    association.class.reflect_on_all_associations(:belongs_to).detect { |a| a.foreign_key !~ Regexp.new(@auditee_class.to_s.downcase) and break a.foreign_key }
+  end
+
+  def transposed(association_array)
+    # [{"model_id"=>[nil, 1]}, {"model_id"=>[nil, 2]}] --> {"model_id"=>[[nil, nil], [1, 2]]}
+    association_array.flat_map(&:to_a)
+                     .group_by(&:first)
+                     .map{ |k, v| [k, v.map(&:last).transpose] }
+                     .to_h
+
   end
 end
