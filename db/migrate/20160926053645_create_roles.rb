@@ -7,8 +7,7 @@ class CreateRoles < ActiveRecord::Migration[5.0]
 
     create_table :role_audits do |t|
       t.integer     :auditee_id
-      t.string      :action
-      t.jsonb       :audited_changes #diff
+      t.jsonb       :diff
       t.datetime    :created_at
     end
 
