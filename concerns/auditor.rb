@@ -37,4 +37,4 @@ module Auditor
   end
 end
 
-ActiveRecord::Base.send(:include, Auditor)
+#ActiveRecord::Base.send(:include, Auditor)
