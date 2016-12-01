@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160928035407) do
+ActiveRecord::Schema.define(version: 20161201055657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,12 @@ ActiveRecord::Schema.define(version: 20160928035407) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "colors", force: :cascade do |t|
+    t.string  "name"
+    t.integer "role_id"
+    t.index ["role_id"], name: "index_colors_on_role_id", using: :btree
   end
 
   create_table "duties", force: :cascade do |t|
@@ -38,8 +44,9 @@ ActiveRecord::Schema.define(version: 20160928035407) do
   create_table "role_audits", force: :cascade do |t|
     t.integer  "auditee_id"
     t.string   "action"
-    t.jsonb    "audited_changes"
+    t.jsonb    "diff"
     t.datetime "created_at"
+    t.text     "comment"
     t.index ["auditee_id"], name: "index_role_audits_on_auditee_id", using: :btree
   end
 

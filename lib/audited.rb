@@ -17,7 +17,9 @@ class Audited < SimpleDelegator
     ActiveRecord::Base.transaction do
       audited_changes = changes.merge(associations_changes)
       super
-      @auditor_class.create!(auditee_id: id, diff: audited_changes)
+      @auditor_class.create!( auditee_id: id,
+                              diff: audited_changes,
+                              comment: audit_comment)
     end
     self
     #rescue StandardError

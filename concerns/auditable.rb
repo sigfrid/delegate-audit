@@ -1,6 +1,8 @@
 module Auditable
   extend ActiveSupport::Concern
 
+  attr_accessor :audit_comment
+
   def build_for_audit(params)
     associations, attributes = params.to_h.partition { |key, _| key.last(4) == "_ids" }.map(&:to_h)
 
