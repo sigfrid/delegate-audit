@@ -22,8 +22,8 @@ class Audited < SimpleDelegator
                               comment: audit_comment)
     end
     self
-    #rescue StandardError
-  #  false
+    rescue StandardError
+    false
   end
 
   def audits
